@@ -41,7 +41,7 @@ exports.createProducePrompt = async (produce) => {
 
         const completion = await openai.createCompletion({
             model: 'text-davinci-002',
-            max_tokens: 300,
+            max_tokens: 650,
             temperature: 0.7,
             prompt: content
         });
@@ -72,7 +72,7 @@ exports.resolveQuery = async (document, query) => {
 
         const completion = await openai.createCompletion({
             model: 'text-davinci-002',
-            max_tokens: 200,
+            max_tokens: 300,
             prompt: content
         });
 
