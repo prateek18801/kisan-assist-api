@@ -10,11 +10,8 @@ exports.extractProduceName = async (query) => {
 
     try {
 
-        // read query_produce_name.txt file
         let content = fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'extract_produce_name_prompt.txt')).toString();
-        // append new query to file content
         content += `\nQ. ${query}\nA.`;
-
 
         const completion = await openai.createCompletion({
             model: 'text-davinci-002',
@@ -35,8 +32,33 @@ exports.extractProduceName = async (query) => {
 }
 
 exports.createProducePrompt = async (produce) => {
-    // fetch prompt for banana
-    // generate similar prompt for produce(openai)
-    // save new prompt on database
-    // return the generated prompt
+    const config = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
+    const openai = new OpenAIApi(config);
+
+    try {
+        const wheat = await Produce.findOne({ produce_name: 'wheat' });
+        const content = `1. ${wheat.produce_name.toUpperCase()}\n${wheat.description}\n\n2. ${produce.toUpperCase()}\n`;
+
+        const completion = await openai.createCompletion({
+            model: 'text-davinci-002',
+            max_tokens: 300,
+            temperature: 0.7,
+            prompt: content
+        });
+
+        const saved = await new Produce({ 
+            produce_name: produce.toLowerCase(), 
+            description: completion.data.choices[0].text 
+        }).save();
+
+        return saved;
+
+    } catch (err) {
+        if (err.response) {
+            console.log(err.response.status);
+            console.log(err.response.data);
+        } else {
+            console.log(err.message);
+        }
+    }
 }
