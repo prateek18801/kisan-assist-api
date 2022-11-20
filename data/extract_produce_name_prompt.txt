@@ -1,0 +1,15 @@
+Identify the farm produce in the following queries:
+Q. Where to grow banana?
+A. banana
+Q. How to treat pinworm disease in tomato?
+A. tomato
+Q. What kind of soil is best for wheat?
+A. wheat
+Q. Apple grows best in which climate?
+A. apple
+Q. What variety of pumpkin should I grow here?
+A. pumpkin
+Q. What is the rate of moong dal in market?
+A. moong dal
+Q. Coffee should be grown in what climate?
+A. coffee
