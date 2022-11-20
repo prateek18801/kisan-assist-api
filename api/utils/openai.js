@@ -9,19 +9,19 @@ exports.extractProduceName = async (query) => {
     const openai = new OpenAIApi(config);
 
     try {
-        
+
         // read query_produce_name.txt file
-        let content = fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'query_produce_name.txt')).toString();
+        let content = fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'extract_produce_name_prompt.txt')).toString();
         // append new query to file content
         content += `\nQ. ${query}\nA.`;
-        
+
 
         const completion = await openai.createCompletion({
             model: 'text-davinci-002',
             prompt: content
         });
-        
-        return completion.data.choices[0].text;
+
+        return completion.data.choices[0].text.trim();
 
     } catch (err) {
         if (err.response) {
