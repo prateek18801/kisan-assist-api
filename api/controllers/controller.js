@@ -3,11 +3,17 @@ const Produce = require('../models/produce');
 const { extractProduceName, createProducePrompt, resolveQuery } = require('../utils/openai');
 
 exports.getAnswer = async (req, res, next) => {
-    const query = req.query.q.replaceAll(/\?/g, '');
+    const query = req.query.q && req.query.q.replaceAll(/\?/g, '');
+    if (!query) {
+        return res.status(400).json({
+            ok: false,
+            message: 'Ask something first'
+        });
+    }
     try {
         // extract the produce name from the incoming query
         const produce = await extractProduceName(query);
-        
+
         // find the prompt for the produce in db
         let saved = await Produce.findOne({ produce_name: produce });
 
