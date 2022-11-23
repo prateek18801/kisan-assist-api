@@ -1,3 +1,4 @@
+const RAQ = require('../models/raq');
 const Produce = require('../models/produce');
 
 const { extractProduceName, createProducePrompt, resolveQuery } = require('../utils/openai');
@@ -25,12 +26,27 @@ exports.getAnswer = async (req, res, next) => {
         // generate response from prompt and query
         const response = await resolveQuery(saved, query);
 
-        return res.status(200).json({
+        res.status(200).json({
             ok: true,
             message: response
         });
 
+        await new RAQ({ question: query, answer: response }).save();
+        
     } catch (err) {
+        next(err);
+    }
+}
+
+
+exports.getRAQs = async (req, res, next) => {
+    try {
+        const questions = await RAQ.find({}).sort({createdAt: -1}).limit(15);
+        return res.status(200).json({
+            ok: true,
+            questions
+        });
+    } catch(err) {
         next(err);
     }
 }
@@ -53,3 +69,4 @@ exports.registerProduce = async (req, res, next) => {
         next(err);
     }
 }
+
