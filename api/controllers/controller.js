@@ -1,10 +1,13 @@
+const VoiceResponse = require('twilio').twiml.VoiceResponse;
+
 const RAQ = require('../models/raq');
 const Produce = require('../models/produce');
 
 const { extractProduceName, createProducePrompt, resolveQuery } = require('../utils/openai');
 
 exports.getAnswer = async (req, res, next) => {
-    const query = req.query.q && req.query.q.replaceAll(/\?/g, '');
+    let query = req.query.q && req.query.q.replaceAll(/\?/g, '');
+    
     if (!query) {
         return res.status(400).json({
             ok: false,
@@ -25,6 +28,7 @@ exports.getAnswer = async (req, res, next) => {
 
         // generate response from prompt and query
         const response = await resolveQuery(saved, query);
+        // change back to lang
 
         res.status(200).json({
             ok: true,
@@ -32,21 +36,35 @@ exports.getAnswer = async (req, res, next) => {
         });
 
         await new RAQ({ question: query, answer: response }).save();
-        
+
     } catch (err) {
         next(err);
     }
 }
 
 
+exports.recieveCall = async (req, res, next) => {
+    const twiml = new VoiceResponse();
+    twiml.say('Hello, this is the farmer helpline number, please leave your message after the beep');
+    twiml.record({
+        action: '/api/v1/recorded',
+        transcribe: true,
+
+    });
+    twiml.hangup();
+    res.type('text/xml');
+    res.send(twiml.toString());
+}
+
+
 exports.getRAQs = async (req, res, next) => {
     try {
-        const questions = await RAQ.find({}).sort({createdAt: -1}).limit(15);
+        const questions = await RAQ.find({}).sort({ createdAt: -1 }).limit(10);
         return res.status(200).json({
             ok: true,
             questions
         });
-    } catch(err) {
+    } catch (err) {
         next(err);
     }
 }
