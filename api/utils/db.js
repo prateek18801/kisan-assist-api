@@ -1,24 +1,15 @@
 const mongoose = require('mongoose');
 
-async function connect() {
-    try {
-
-        await mongoose.connect(process.env.MONGODB_URI);
-        console.log('DB connected');
-
-    } catch (err) {
-        console.error('DB connection error:', err.code);
-    }
-
-    mongoose.connection.on('error', err => console.error('DB connection error:', err.code));
-
-    mongoose.connection.on('disconnected', () => console.log('DB disconnected'));
-
-    mongoose.connection.on('reconnected', () => console.log('DB reconnected'));
+function connect() {
+    mongoose.set('strictQuery', true);
+    mongoose.connect(process.env.MONGODB_URI).then(console.log('database connected')).catch(err => console.error('database connection error:', err));
+    
+    mongoose.connection.on('disconnected', () => console.log('database disconnected'));
+    mongoose.connection.on('reconnected', () => console.log('database reconnected'));
 
     const gracefulExit = () => {
         mongoose.connection.close(() => {
-            console.log('DB connection terminated');
+            console.log('database connection terminated');
             process.exit(0);
         });
     }
