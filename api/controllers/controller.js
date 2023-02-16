@@ -1,5 +1,3 @@
-const VoiceResponse = require('twilio').twiml.VoiceResponse;
-
 const RAQ = require('../models/raq');
 const Produce = require('../models/produce');
 
@@ -7,7 +5,7 @@ const { extractProduceName, createProducePrompt, resolveQuery } = require('../ut
 
 exports.getAnswer = async (req, res, next) => {
     let query = req.query.q && req.query.q.replaceAll(/\?/g, '');
-    
+
     if (!query) {
         return res.status(400).json({
             ok: false,
@@ -42,24 +40,10 @@ exports.getAnswer = async (req, res, next) => {
     }
 }
 
-
-exports.recieveCall = async (req, res, next) => {
-    const twiml = new VoiceResponse();
-    twiml.say('Hello, this is the farmer helpline number, please leave your message after the beep');
-    twiml.record({
-        action: '/api/v1/recorded',
-        transcribe: true,
-
-    });
-    twiml.hangup();
-    res.type('text/xml');
-    res.send(twiml.toString());
-}
-
-
 exports.getRAQs = async (req, res, next) => {
     try {
         const questions = await RAQ.find({}).sort({ createdAt: -1 }).limit(10);
+        
         return res.status(200).json({
             ok: true,
             questions
