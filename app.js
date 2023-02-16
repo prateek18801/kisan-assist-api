@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
+
 const router = require('./api/routes/router');
+
 require('./api/utils/db').connect();
 
 const app = express();
@@ -11,7 +13,7 @@ app.use(express.urlencoded({ extended: false }));
 
 app.get('/', (req, res, next)=> {
     return res.status(200).json({
-        message: 'server running on port 3000'
+        message: 'service online'
     });
 })
 

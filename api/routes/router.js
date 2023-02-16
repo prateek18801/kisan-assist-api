@@ -2,7 +2,7 @@ const router = require('express').Router();
 
 const controller = require('../controllers/controller');
 
-router.get('/v1/raq', controller.getRAQs);
+router.get('/v1/raq', controller.getRaq);
 
 router.get('/v1/answer', controller.getAnswer);
 

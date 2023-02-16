@@ -9,7 +9,6 @@ exports.extractProduceName = async (query) => {
     const openai = new OpenAIApi(config);
 
     try {
-
         let content = fs.readFileSync(path.join(__dirname, '..', '..', 'data', 'extract_produce_name_prompt.txt')).toString();
         content += `\nQ. ${query}\nA.`;
 
@@ -28,7 +27,6 @@ exports.extractProduceName = async (query) => {
             console.log(err.message);
         }
     }
-
 }
 
 exports.createProducePrompt = async (produce) => {
@@ -46,9 +44,9 @@ exports.createProducePrompt = async (produce) => {
             prompt: content
         });
 
-        const saved = await new Produce({ 
-            produce_name: produce.toLowerCase(), 
-            description: completion.data.choices[0].text 
+        const saved = await new Produce({
+            produce_name: produce.toLowerCase(),
+            description: completion.data.choices[0].text
         }).save();
 
         return saved;
@@ -78,7 +76,7 @@ exports.resolveQuery = async (document, query) => {
 
         return completion.data.choices[0].text.trim();
 
-    } catch(err) {
+    } catch (err) {
         if (err.response) {
             console.log(err.response.status);
             console.log(err.response.data);

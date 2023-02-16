@@ -6,11 +6,7 @@ const questionSchema = new mongoose.Schema({
     },
     answer: {
         type: String
-    },
-    tags: {
-        type: Array,
-        default: []
     }
 }, { timestamps: true });
 
-module.exports = mongoose.model('RAQ', questionSchema);
+module.exports = mongoose.model('raq', questionSchema);

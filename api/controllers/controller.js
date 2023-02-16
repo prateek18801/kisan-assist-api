@@ -1,15 +1,15 @@
-const RAQ = require('../models/raq');
+const Raq = require('../models/raq');
 const Produce = require('../models/produce');
 
 const { extractProduceName, createProducePrompt, resolveQuery } = require('../utils/openai');
 
 exports.getAnswer = async (req, res, next) => {
-    let query = req.query.q && req.query.q.replaceAll(/\?/g, '');
+    let query = req.query.q;
 
     if (!query) {
         return res.status(400).json({
             ok: false,
-            message: 'Ask something first'
+            message: 'Empty input received'
         });
     }
     try {
@@ -26,24 +26,23 @@ exports.getAnswer = async (req, res, next) => {
 
         // generate response from prompt and query
         const response = await resolveQuery(saved, query);
-        // change back to lang
 
         res.status(200).json({
             ok: true,
             message: response
         });
 
-        await new RAQ({ question: query, answer: response }).save();
+        await new Raq({ question: query, answer: response }).save();
 
     } catch (err) {
         next(err);
     }
 }
 
-exports.getRAQs = async (req, res, next) => {
+exports.getRaq = async (req, res, next) => {
     try {
-        const questions = await RAQ.find({}).sort({ createdAt: -1 }).limit(10);
-        
+        const questions = await Raq.find({}).sort({ createdAt: -1 }).limit(10);
+
         return res.status(200).json({
             ok: true,
             questions
