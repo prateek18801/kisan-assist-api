@@ -5,7 +5,10 @@ const { Configuration, OpenAIApi } = require('openai');
 const Produce = require('../models/produce');
 
 exports.extractProduceName = async (query) => {
-    const config = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
+    const config = new Configuration({ 
+        organization: process.env.OPENAI_API_ORGANIZATION,
+        apiKey: process.env.OPENAI_API_KEY 
+    });
     const openai = new OpenAIApi(config);
 
     try {
@@ -30,7 +33,10 @@ exports.extractProduceName = async (query) => {
 }
 
 exports.createProducePrompt = async (produce) => {
-    const config = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
+    const config = new Configuration({ 
+        organization: process.env.OPENAI_API_ORGANIZATION,
+        apiKey: process.env.OPENAI_API_KEY 
+    });
     const openai = new OpenAIApi(config);
 
     try {
@@ -62,7 +68,10 @@ exports.createProducePrompt = async (produce) => {
 }
 
 exports.resolveQuery = async (document, query) => {
-    const config = new Configuration({ apiKey: process.env.OPENAI_API_KEY });
+    const config = new Configuration({ 
+        organization: process.env.OPENAI_API_ORGANIZATION,
+        apiKey: process.env.OPENAI_API_KEY 
+    });
     const openai = new OpenAIApi(config);
 
     try {
